@@ -22,3 +22,15 @@ func NewStatusController() *controller.StatusController {
 	)
 	return &controller.StatusController{}
 }
+
+// NewUserController ...
+func NewUserController() *controller.UserController {
+	wire.Build(
+		repository.NewUserRepositoryImpl,
+		service.NewUserServiceImpl,
+		controller.NewUserController,
+		wire.Bind(new(service.UserService), new(*service.UserServiceImpl)),
+		wire.Bind(new(repository.UserRepository), new(*repository.UserRepositoryImpl)),
+	)
+	return &controller.UserController{}
+}

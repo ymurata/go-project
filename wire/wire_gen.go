@@ -19,3 +19,10 @@ func NewStatusController() *controller.StatusController {
 	statusController := controller.NewStatusController(statusServiceImpl)
 	return statusController
 }
+
+func NewUserController() *controller.UserController {
+	userRepositoryImpl := repository.NewUserRepositoryImpl()
+	userServiceImpl := service.NewUserServiceImpl(userRepositoryImpl)
+	userController := controller.NewUserController(userServiceImpl)
+	return userController
+}
