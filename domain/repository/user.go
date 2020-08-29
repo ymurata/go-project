@@ -1,7 +1,10 @@
 package repository
 
 import (
+	"gorm.io/gorm"
+
 	"go-project/domain/model"
+	"go-project/infrastructure/database"
 	"go-project/request"
 )
 
@@ -15,12 +18,16 @@ type (
 		Delete(id int64) error
 	}
 	// UserRepositoryImpl ...
-	UserRepositoryImpl struct{}
+	UserRepositoryImpl struct {
+		db *gorm.DB
+	}
 )
 
 // NewUserRepositoryImpl ...
-func NewUserRepositoryImpl() *UserRepositoryImpl {
-	return &UserRepositoryImpl{}
+func NewUserRepositoryImpl(db *database.DB) *UserRepositoryImpl {
+	return &UserRepositoryImpl{
+		db: db.Get(),
+	}
 }
 
 // List ...

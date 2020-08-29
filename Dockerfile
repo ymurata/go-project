@@ -8,7 +8,3 @@ RUN apk update && \
 RUN go get github.com/pilu/fresh
 
 WORKDIR /app
-
-COPY go.mod go.sum ./
-
-RUN go mod download

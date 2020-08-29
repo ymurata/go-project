@@ -8,6 +8,7 @@ import (
 
 	"go-project/controller"
 	"go-project/domain/repository"
+	"go-project/infrastructure/database"
 	"go-project/service"
 )
 
@@ -24,7 +25,7 @@ func NewStatusController() *controller.StatusController {
 }
 
 // NewUserController ...
-func NewUserController() *controller.UserController {
+func NewUserController(db *database.DB) *controller.UserController {
 	wire.Build(
 		repository.NewUserRepositoryImpl,
 		service.NewUserServiceImpl,
