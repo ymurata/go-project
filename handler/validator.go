@@ -2,7 +2,7 @@ package handler
 
 import (
 	validator "github.com/go-playground/validator/v10"
-	"github.com/labstack/echo"
+	echo "github.com/labstack/echo/v4"
 )
 
 // Validator ...

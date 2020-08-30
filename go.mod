@@ -8,6 +8,7 @@ require (
 	github.com/go-playground/validator/v10 v10.3.0
 	github.com/google/subcommands v1.2.0 // indirect
 	github.com/google/wire v0.4.0
+	github.com/iancoleman/strcase v0.1.1
 	github.com/jackc/pgproto3/v2 v2.0.4 // indirect
 	github.com/jinzhu/gorm v1.9.16
 	github.com/labstack/echo v3.3.10+incompatible
