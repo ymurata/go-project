@@ -1,13 +1,25 @@
 package main
 
 import (
-	"go-project/infrastructure/database"
-	"go-project/wire"
 	"os"
 
 	echo "github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+
+	"go-project/context"
+	"go-project/handler"
+	"go-project/infrastructure/database"
+	gm "go-project/middleware"
+	"go-project/wire"
 )
+
+type handlerFunc func(c *context.Context) error
+
+func cast(next handlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return next(c.(*context.Context))
+	}
+}
 
 func router(e *echo.Echo, db *database.DB) {
 	statusRouter(e)
@@ -16,25 +28,29 @@ func router(e *echo.Echo, db *database.DB) {
 
 func statusRouter(e *echo.Echo) {
 	controller := wire.NewStatusController()
-	e.GET("/", controller.Get)
+	e.GET("/", cast(controller.Get))
 }
 
 func userRouter(e *echo.Echo, db *database.DB) {
 	controller := wire.NewUserController(db)
-	e.GET("/users", controller.List)
-	e.POST("/users", controller.Create)
-	e.GET("/users/:id", controller.Get)
-	e.PUT("/users/:id", controller.Update)
-	e.DELETE("/users/:id", controller.Delete)
+	e.GET("/users", cast(controller.List))
+	e.POST("/users", cast(controller.Create))
+	e.GET("/users/:id", cast(controller.Get))
+	e.PUT("/users/:id", cast(controller.Update))
+	e.DELETE("/users/:id", cast(controller.Delete))
 }
 
 func main() {
 	e := echo.New()
 
+	e.HTTPErrorHandler = handler.HTTPErrorHandler
+	e.Validator = handler.NewValidator()
+
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Logger())
 	e.Use(middleware.RequestID())
 	e.Use(middleware.Recover())
+	e.Use(gm.Context())
 
 	db, err := database.New(os.Getenv("DATABASE_URL"))
 	if err != nil {

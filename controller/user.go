@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"go-project/request"
-	"go-project/service"
 	"net/http"
 
-	echo "github.com/labstack/echo/v4"
+	"go-project/context"
+	"go-project/request"
+	"go-project/service"
 )
 
 // UserController ...
@@ -21,7 +21,7 @@ func NewUserController(service service.UserService) *UserController {
 }
 
 // List ...
-func (u *UserController) List(c echo.Context) error {
+func (u *UserController) List(c *context.Context) error {
 	users, err := u.service.List()
 	if err != nil {
 		return err
@@ -30,9 +30,9 @@ func (u *UserController) List(c echo.Context) error {
 }
 
 // Get ...
-func (u *UserController) Get(c echo.Context) error {
+func (u *UserController) Get(c *context.Context) error {
 	var data request.UserID
-	if err := c.Bind(&data); err != nil {
+	if err := c.BindAndValidate(&data); err != nil {
 		return err
 	}
 
@@ -44,9 +44,9 @@ func (u *UserController) Get(c echo.Context) error {
 }
 
 // Create ...
-func (u *UserController) Create(c echo.Context) error {
+func (u *UserController) Create(c *context.Context) error {
 	var data request.UserCreate
-	if err := c.Bind(&data); err != nil {
+	if err := c.BindAndValidate(&data); err != nil {
 		return err
 	}
 
@@ -58,13 +58,13 @@ func (u *UserController) Create(c echo.Context) error {
 }
 
 // Update ...
-func (u *UserController) Update(c echo.Context) error {
+func (u *UserController) Update(c *context.Context) error {
 	var data request.UserUpdate
-	if err := c.Bind(&data); err != nil {
+	if err := c.BindAndValidate(&data); err != nil {
 		return err
 	}
 
-	user, err := u.service.Update(1, data)
+	user, err := u.service.Update(data.ID, data)
 	if err != nil {
 		return err
 	}
@@ -72,9 +72,9 @@ func (u *UserController) Update(c echo.Context) error {
 }
 
 // Delete ...
-func (u *UserController) Delete(c echo.Context) error {
+func (u *UserController) Delete(c *context.Context) error {
 	var data request.UserID
-	if err := c.Bind(&data); err != nil {
+	if err := c.BindAndValidate(&data); err != nil {
 		return err
 	}
 	return u.service.Delete(data.ID)
