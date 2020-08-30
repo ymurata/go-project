@@ -6,9 +6,9 @@ package wire
 import (
 	"github.com/google/wire"
 
-	"go-project/controller"
 	"go-project/domain/repository"
 	"go-project/infrastructure/database"
+	"go-project/interface/controller"
 	"go-project/service"
 )
 

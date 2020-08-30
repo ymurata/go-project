@@ -3,7 +3,7 @@ package service
 import (
 	"go-project/domain/model"
 	"go-project/domain/repository"
-	"go-project/request"
+	"go-project/interface/parameter"
 )
 
 type (
@@ -11,8 +11,8 @@ type (
 	UserService interface {
 		List() ([]*model.User, error)
 		Get(id int64) (*model.User, error)
-		Create(data request.UserCreate) (*model.User, error)
-		Update(id int64, data request.UserUpdate) (*model.User, error)
+		Create(data parameter.UserCreate) (*model.User, error)
+		Update(id int64, data parameter.UserUpdate) (*model.User, error)
 		Delete(id int64) error
 	}
 	// UserServiceImpl ...
@@ -39,12 +39,12 @@ func (u *UserServiceImpl) Get(id int64) (*model.User, error) {
 }
 
 // Create ...
-func (u *UserServiceImpl) Create(data request.UserCreate) (*model.User, error) {
+func (u *UserServiceImpl) Create(data parameter.UserCreate) (*model.User, error) {
 	return u.repo.Create(data)
 }
 
 // Update ...
-func (u *UserServiceImpl) Update(id int64, data request.UserUpdate) (*model.User, error) {
+func (u *UserServiceImpl) Update(id int64, data parameter.UserUpdate) (*model.User, error) {
 	return u.repo.Update(id, data)
 }
 

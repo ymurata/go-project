@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"go-project/context"
-	"go-project/request"
+	"go-project/interface/parameter"
 	"go-project/service"
 )
 
@@ -31,7 +31,7 @@ func (u *UserController) List(c *context.Context) error {
 
 // Get ...
 func (u *UserController) Get(c *context.Context) error {
-	var data request.UserID
+	var data parameter.UserID
 	if err := c.BindAndValidate(&data); err != nil {
 		return err
 	}
@@ -45,7 +45,7 @@ func (u *UserController) Get(c *context.Context) error {
 
 // Create ...
 func (u *UserController) Create(c *context.Context) error {
-	var data request.UserCreate
+	var data parameter.UserCreate
 	if err := c.BindAndValidate(&data); err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func (u *UserController) Create(c *context.Context) error {
 
 // Update ...
 func (u *UserController) Update(c *context.Context) error {
-	var data request.UserUpdate
+	var data parameter.UserUpdate
 	if err := c.BindAndValidate(&data); err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ func (u *UserController) Update(c *context.Context) error {
 
 // Delete ...
 func (u *UserController) Delete(c *context.Context) error {
-	var data request.UserID
+	var data parameter.UserID
 	if err := c.BindAndValidate(&data); err != nil {
 		return err
 	}

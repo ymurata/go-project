@@ -1,11 +1,13 @@
 package repository
 
 import (
+	"errors"
+
 	"gorm.io/gorm"
 
 	"go-project/domain/model"
 	"go-project/infrastructure/database"
-	"go-project/request"
+	"go-project/interface/parameter"
 )
 
 type (
@@ -13,8 +15,8 @@ type (
 	UserRepository interface {
 		List() ([]*model.User, error)
 		Get(id int64) (*model.User, error)
-		Create(data request.UserCreate) (*model.User, error)
-		Update(id int64, data request.UserUpdate) (*model.User, error)
+		Create(data parameter.UserCreate) (*model.User, error)
+		Update(id int64, data parameter.UserUpdate) (*model.User, error)
 		Delete(id int64) error
 	}
 	// UserRepositoryImpl ...
@@ -34,6 +36,9 @@ func NewUserRepositoryImpl(db *database.DB) *UserRepositoryImpl {
 func (u *UserRepositoryImpl) List() ([]*model.User, error) {
 	var users []*model.User
 	if err := u.db.Find(&users).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return []*model.User{}, nil
+		}
 		return []*model.User{}, err
 	}
 	return users, nil
@@ -45,7 +50,7 @@ func (u *UserRepositoryImpl) Get(id int64) (*model.User, error) {
 }
 
 // Create ...
-func (u *UserRepositoryImpl) Create(data request.UserCreate) (*model.User, error) {
+func (u *UserRepositoryImpl) Create(data parameter.UserCreate) (*model.User, error) {
 	user := model.User{
 		Name:  data.Name,
 		Email: data.Email,
@@ -57,7 +62,7 @@ func (u *UserRepositoryImpl) Create(data request.UserCreate) (*model.User, error
 }
 
 // Update ...
-func (u *UserRepositoryImpl) Update(id int64, data request.UserUpdate) (*model.User, error) {
+func (u *UserRepositoryImpl) Update(id int64, data parameter.UserUpdate) (*model.User, error) {
 	var user model.User
 	ud := model.User{Name: data.Name}
 	if err := u.db.Model(&user).Where("id = ?", id).Updates(ud).Error; err != nil {
@@ -75,6 +80,9 @@ func (u *UserRepositoryImpl) Delete(id int64) error {
 func (u *UserRepositoryImpl) findByID(id int64) (*model.User, error) {
 	var user model.User
 	if err := u.db.First(&user, id).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return &model.User{}, nil
+		}
 		return nil, err
 	}
 	return &user, nil
