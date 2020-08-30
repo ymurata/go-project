@@ -2,7 +2,7 @@ package model
 
 // User ...
 type User struct {
-	ID    int64  `json:"id"`
+	Base
 	Name  string `json:"name"`
 	Email string `json:"email"`
 }

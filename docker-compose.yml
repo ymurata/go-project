@@ -2,14 +2,15 @@ version: '3.8'
 services:
   api:
     build: .
+    working_dir: /go/src/app
     tty: true
-    command: fresh
+    command: run
     ports:
       - 8000:8000
     depends_on:
       - db
     volumes:
-      - ./:/app
+      - ./:/go/src/app
     env_file:
       - ./.env
   db:
