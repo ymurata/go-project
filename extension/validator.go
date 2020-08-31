@@ -1,4 +1,4 @@
-package handler
+package extension
 
 import (
 	validator "github.com/go-playground/validator/v10"

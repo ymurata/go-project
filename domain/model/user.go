@@ -2,7 +2,7 @@ package model
 
 // User ...
 type User struct {
-	Base
+	BaseWithHashID
 	Name  string `json:"name"`
 	Email string `json:"email"`
 }

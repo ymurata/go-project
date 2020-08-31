@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 
 	"go-project/context"
-	"go-project/handler"
+	"go-project/extension"
 	"go-project/infrastructure/database"
 	gm "go-project/middleware"
 	"go-project/wire"
@@ -43,8 +43,8 @@ func userRouter(e *echo.Echo, db *database.DB) {
 func main() {
 	e := echo.New()
 
-	e.HTTPErrorHandler = handler.HTTPErrorHandler
-	e.Validator = handler.NewValidator()
+	e.HTTPErrorHandler = extension.HTTPErrorHandler
+	e.Validator = extension.NewValidator()
 
 	e.Pre(middleware.RemoveTrailingSlash())
 	e.Use(middleware.Logger())
@@ -54,6 +54,10 @@ func main() {
 
 	db, err := database.New(os.Getenv("DATABASE_URL"))
 	if err != nil {
+		panic(err)
+	}
+
+	if _, err := extension.NewHash("salt", 20); err != nil {
 		panic(err)
 	}
 

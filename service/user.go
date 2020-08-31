@@ -3,6 +3,7 @@ package service
 import (
 	"go-project/domain/model"
 	"go-project/domain/repository"
+	"go-project/extension"
 	"go-project/interface/parameter"
 )
 
@@ -10,10 +11,10 @@ type (
 	// UserService ...
 	UserService interface {
 		List() ([]*model.User, error)
-		Get(id int64) (*model.User, error)
+		Get(id extension.HashID64) (*model.User, error)
 		Create(data parameter.UserCreate) (*model.User, error)
-		Update(id int64, data parameter.UserUpdate) (*model.User, error)
-		Delete(id int64) error
+		Update(id extension.HashID64, data parameter.UserUpdate) (*model.User, error)
+		Delete(id extension.HashID64) error
 	}
 	// UserServiceImpl ...
 	UserServiceImpl struct {
@@ -34,7 +35,7 @@ func (u *UserServiceImpl) List() ([]*model.User, error) {
 }
 
 // Get ...
-func (u *UserServiceImpl) Get(id int64) (*model.User, error) {
+func (u *UserServiceImpl) Get(id extension.HashID64) (*model.User, error) {
 	return u.repo.Get(id)
 }
 
@@ -44,12 +45,12 @@ func (u *UserServiceImpl) Create(data parameter.UserCreate) (*model.User, error)
 }
 
 // Update ...
-func (u *UserServiceImpl) Update(id int64, data parameter.UserUpdate) (*model.User, error) {
+func (u *UserServiceImpl) Update(id extension.HashID64, data parameter.UserUpdate) (*model.User, error) {
 	return u.repo.Update(id, data)
 }
 
 // Delete ...
-func (u *UserServiceImpl) Delete(id int64) error {
+func (u *UserServiceImpl) Delete(id extension.HashID64) error {
 	return u.repo.Delete(id)
 }
 
