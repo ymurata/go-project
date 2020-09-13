@@ -10,7 +10,7 @@ import (
 func Context() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			return next(&context.Context{Context: c})
+			return next(context.Context{Context: c})
 		}
 	}
 }

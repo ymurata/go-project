@@ -21,7 +21,7 @@ func NewUserController(service service.UserService) *UserController {
 }
 
 // List ...
-func (u *UserController) List(c *context.Context) error {
+func (u *UserController) List(c context.Context) error {
 	users, err := u.service.List()
 	if err != nil {
 		return err
@@ -30,7 +30,7 @@ func (u *UserController) List(c *context.Context) error {
 }
 
 // Get ...
-func (u *UserController) Get(c *context.Context) error {
+func (u *UserController) Get(c context.Context) error {
 	var data parameter.UserID
 	if err := c.BindAndValidate(&data); err != nil {
 		return err
@@ -44,7 +44,7 @@ func (u *UserController) Get(c *context.Context) error {
 }
 
 // Create ...
-func (u *UserController) Create(c *context.Context) error {
+func (u *UserController) Create(c context.Context) error {
 	var data parameter.UserCreate
 	if err := c.BindAndValidate(&data); err != nil {
 		return err
@@ -58,7 +58,7 @@ func (u *UserController) Create(c *context.Context) error {
 }
 
 // Update ...
-func (u *UserController) Update(c *context.Context) error {
+func (u *UserController) Update(c context.Context) error {
 	var data parameter.UserUpdate
 	if err := c.BindAndValidate(&data); err != nil {
 		return err
@@ -72,7 +72,7 @@ func (u *UserController) Update(c *context.Context) error {
 }
 
 // Delete ...
-func (u *UserController) Delete(c *context.Context) error {
+func (u *UserController) Delete(c context.Context) error {
 	var data parameter.UserID
 	if err := c.BindAndValidate(&data); err != nil {
 		return err

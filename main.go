@@ -13,11 +13,11 @@ import (
 	"go-project/wire"
 )
 
-type handlerFunc func(c *context.Context) error
+type handlerFunc func(c context.Context) error
 
 func cast(next handlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return next(c.(*context.Context))
+		return next(c.(context.Context))
 	}
 }
 
