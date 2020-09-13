@@ -14,6 +14,7 @@ import (
 
 // Injectors from wire.go:
 
+// NewStatusController ...
 func NewStatusController() *controller.StatusController {
 	statusRepositoryImpl := repository.NewStatusRepositoryImpl()
 	statusServiceImpl := service.NewStatusServiceImpl(statusRepositoryImpl)
@@ -21,9 +22,10 @@ func NewStatusController() *controller.StatusController {
 	return statusController
 }
 
-func NewUserController(db *database.DB) *controller.UserController {
-	userRepositoryImpl := repository.NewUserRepositoryImpl(db)
-	userServiceImpl := service.NewUserServiceImpl(userRepositoryImpl)
+// NewUserController ...
+func NewUserController(db database.Handler) *controller.UserController {
+	userRepositoryImpl := repository.NewUserRepositoryImpl()
+	userServiceImpl := service.NewUserServiceImpl(db, userRepositoryImpl)
 	userController := controller.NewUserController(userServiceImpl)
 	return userController
 }

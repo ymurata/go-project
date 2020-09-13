@@ -21,7 +21,7 @@ func cast(next handlerFunc) echo.HandlerFunc {
 	}
 }
 
-func router(e *echo.Echo, db *database.DB) {
+func router(e *echo.Echo, db database.Handler) {
 	statusRouter(e)
 	userRouter(e, db)
 }
@@ -31,7 +31,7 @@ func statusRouter(e *echo.Echo) {
 	e.GET("/", cast(controller.Get))
 }
 
-func userRouter(e *echo.Echo, db *database.DB) {
+func userRouter(e *echo.Echo, db database.Handler) {
 	controller := wire.NewUserController(db)
 	e.GET("/users", cast(controller.List))
 	e.POST("/users", cast(controller.Create))

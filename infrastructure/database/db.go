@@ -9,10 +9,18 @@ import (
 	"gorm.io/gorm"
 )
 
-// DB ...
-type DB struct {
-	db *gorm.DB
-}
+type (
+	// Handler ...
+	Handler interface {
+		Get() *gorm.DB
+		Transaction(process func(tx *gorm.DB) (interface{}, error)) (interface{}, error)
+	}
+
+	// DB ...
+	DB struct {
+		db *gorm.DB
+	}
+)
 
 // New ...
 func New(databaseURL string) (*DB, error) {
@@ -32,3 +40,19 @@ func New(databaseURL string) (*DB, error) {
 func (d *DB) Get() *gorm.DB {
 	return d.db
 }
+
+// Transaction ...
+func (d *DB) Transaction(process func(tx *gorm.DB) (interface{}, error)) (interface{}, error) {
+	var result interface{}
+	err := d.db.Transaction(func(tx *gorm.DB) error {
+		data, err := process(tx)
+		if err != nil {
+			return err
+		}
+		result = data
+		return nil
+	})
+	return result, err
+}
+
+var _ Handler = (*DB)(nil)

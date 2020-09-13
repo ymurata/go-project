@@ -25,7 +25,7 @@ func NewStatusController() *controller.StatusController {
 }
 
 // NewUserController ...
-func NewUserController(db *database.DB) *controller.UserController {
+func NewUserController(db database.Handler) *controller.UserController {
 	wire.Build(
 		repository.NewUserRepositoryImpl,
 		service.NewUserServiceImpl,
