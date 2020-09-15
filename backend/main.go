@@ -57,11 +57,11 @@ func main() {
 		panic(err)
 	}
 
-	if _, err := extension.NewHash("salt", 20); err != nil {
+	if _, err := extension.NewHash(os.Getenv("HASH_SALT"), 20); err != nil {
 		panic(err)
 	}
 
 	router(e, db)
 
-	e.Logger.Fatal(e.Start(":8000"))
+	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }

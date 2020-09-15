@@ -1,2 +1,2 @@
-/tmp
-.env
+/backend/tmp
+/backend/.env
