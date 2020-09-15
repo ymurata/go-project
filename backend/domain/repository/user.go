@@ -70,7 +70,6 @@ func (u *UserRepositoryImpl) Update(db *gorm.DB, data parameter.UserUpdate) (*mo
 
 // Delete ...
 func (u *UserRepositoryImpl) Delete(db *gorm.DB, data parameter.UserID) error {
-	// TODO: add delete flg
 	user, err := u.findByID(db, data.ID)
 	if err != nil {
 		return err

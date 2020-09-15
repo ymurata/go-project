@@ -2,13 +2,14 @@ package service
 
 import (
 	"errors"
+
+	"gorm.io/gorm"
+
 	"go-project/context"
 	"go-project/domain/model"
 	"go-project/domain/repository"
 	"go-project/infrastructure/database"
 	"go-project/interface/parameter"
-
-	"gorm.io/gorm"
 )
 
 type (
@@ -65,7 +66,11 @@ func (u *UserServiceImpl) Update(ctx context.Context, data parameter.UserUpdate)
 
 // Delete ...
 func (u *UserServiceImpl) Delete(ctx context.Context, data parameter.UserID) error {
-	return u.repo.Delete(u.db.Get(), data)
+	err := u.repo.Delete(u.db.Get(), data)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return err
+	}
+	return nil
 }
 
 var _ UserService = (*UserServiceImpl)(nil)
