@@ -1,21 +1,24 @@
 package service
 
 import (
+	"errors"
+	"go-project/context"
 	"go-project/domain/model"
 	"go-project/domain/repository"
-	"go-project/extension"
 	"go-project/infrastructure/database"
 	"go-project/interface/parameter"
+
+	"gorm.io/gorm"
 )
 
 type (
 	// UserService ...
 	UserService interface {
-		List() ([]*model.User, error)
-		Get(id extension.HashID64) (*model.User, error)
-		Create(data parameter.UserCreate) (*model.User, error)
-		Update(id extension.HashID64, data parameter.UserUpdate) (*model.User, error)
-		Delete(id extension.HashID64) error
+		List(ctx context.Context) ([]*model.User, error)
+		Get(ctx context.Context, data parameter.UserID) (*model.User, error)
+		Create(ctx context.Context, data parameter.UserCreate) (*model.User, error)
+		Update(ctx context.Context, data parameter.UserUpdate) (*model.User, error)
+		Delete(ctx context.Context, data parameter.UserID) error
 	}
 	// UserServiceImpl ...
 	UserServiceImpl struct {
@@ -33,28 +36,36 @@ func NewUserServiceImpl(db database.Handler, repo repository.UserRepository) *Us
 }
 
 // List ...
-func (u *UserServiceImpl) List() ([]*model.User, error) {
+func (u *UserServiceImpl) List(ctx context.Context) ([]*model.User, error) {
 	return u.repo.List(u.db.Get())
 }
 
 // Get ...
-func (u *UserServiceImpl) Get(id extension.HashID64) (*model.User, error) {
-	return u.repo.Get(u.db.Get(), id)
+func (u *UserServiceImpl) Get(ctx context.Context, data parameter.UserID) (*model.User, error) {
+	user, err := u.repo.Get(u.db.Get(), data)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+	return user, nil
 }
 
 // Create ...
-func (u *UserServiceImpl) Create(data parameter.UserCreate) (*model.User, error) {
+func (u *UserServiceImpl) Create(ctx context.Context, data parameter.UserCreate) (*model.User, error) {
 	return u.repo.Create(u.db.Get(), data)
 }
 
 // Update ...
-func (u *UserServiceImpl) Update(id extension.HashID64, data parameter.UserUpdate) (*model.User, error) {
-	return u.repo.Update(u.db.Get(), id, data)
+func (u *UserServiceImpl) Update(ctx context.Context, data parameter.UserUpdate) (*model.User, error) {
+	user, err := u.repo.Update(u.db.Get(), data)
+	if err != nil && !errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, err
+	}
+	return user, nil
 }
 
 // Delete ...
-func (u *UserServiceImpl) Delete(id extension.HashID64) error {
-	return u.repo.Delete(u.db.Get(), id)
+func (u *UserServiceImpl) Delete(ctx context.Context, data parameter.UserID) error {
+	return u.repo.Delete(u.db.Get(), data)
 }
 
 var _ UserService = (*UserServiceImpl)(nil)

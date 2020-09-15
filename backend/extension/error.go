@@ -7,6 +7,8 @@ import (
 	validator "github.com/go-playground/validator/v10"
 	"github.com/iancoleman/strcase"
 	echo "github.com/labstack/echo/v4"
+
+	"go-project/interface/controller"
 )
 
 // ErrorResponse ...
@@ -15,43 +17,51 @@ type ErrorResponse struct {
 }
 
 var (
-	// ErrorResponse500 ...
-	ErrorResponse500 = &ErrorResponse{
+	// ErrResponse404 ...
+	ErrResponse404 = &ErrorResponse{
+		Messages: []string{"存在しません"},
+	}
+	// ErrResponse500 ...
+	ErrResponse500 = &ErrorResponse{
 		Messages: []string{"サーバー内部エラー"},
 	}
 )
 
 const (
-	validateErrorMessage = "%s is invalid value"
+	validateErrorMessage = "%s は不正な値です"
 )
 
 // HTTPErrorHandler ...
 func HTTPErrorHandler(err error, c echo.Context) {
 	s, e := NewErrorResponse(err)
 	c.Logger().Error(err)
-	if err := c.JSON(s, e); err != nil { // MEMO: c.JSON 内部でのエラーをハンドリング
+	if err := c.JSON(s, e); err != nil {
 		c.Logger().Error(err)
 	}
 }
 
 // NewErrorResponse ...
 func NewErrorResponse(err error) (int, *ErrorResponse) {
-	// TODO: difine error type
-	// switch err {
-	// case xxxx:
-	// 	return http.StatusBadRequest, getErrorResponse(err)
+	switch err {
+	case controller.ErrBind:
+		return http.StatusBadRequest, getErrorResponse(err)
+	case echo.ErrNotFound:
+		return http.StatusNotFound, ErrResponse404
+	}
 
 	switch e := err.(type) {
 	case validator.ValidationErrors:
 		return http.StatusBadRequest, getValidatorErrorResponse(e)
 	}
 
-	return http.StatusInternalServerError, ErrorResponse500
+	return http.StatusInternalServerError, ErrResponse500
 }
 
 func getErrorResponse(err error) *ErrorResponse {
 	return &ErrorResponse{
-		Messages: []string{},
+		Messages: []string{
+			err.Error(),
+		},
 	}
 }
 

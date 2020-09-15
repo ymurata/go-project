@@ -1,17 +1,31 @@
 package controller
 
 import (
+	"errors"
 	"net/http"
 
 	"go-project/context"
+	"go-project/domain/model"
 	"go-project/interface/parameter"
 	"go-project/service"
 )
 
-// UserController ...
-type UserController struct {
-	service service.UserService
-}
+type (
+	// UserResponse ...
+	UserResponse struct {
+		User *model.User `json:"user"`
+	}
+
+	// UsersResponse ...
+	UsersResponse struct {
+		Users []*model.User `json:"users"`
+	}
+
+	// UserController ...
+	UserController struct {
+		service service.UserService
+	}
+)
 
 // NewUserController ...
 func NewUserController(service service.UserService) *UserController {
@@ -21,61 +35,76 @@ func NewUserController(service service.UserService) *UserController {
 }
 
 // List ...
-func (u *UserController) List(c context.Context) error {
-	users, err := u.service.List()
+func (u *UserController) List(ctx context.Context) error {
+	users, err := u.service.List(ctx)
 	if err != nil {
 		return err
 	}
-	return c.JSON(http.StatusOK, users)
+	return ctx.JSON(http.StatusOK, UsersResponse{Users: users})
 }
 
 // Get ...
-func (u *UserController) Get(c context.Context) error {
+func (u *UserController) Get(ctx context.Context) error {
 	var data parameter.UserID
-	if err := c.BindAndValidate(&data); err != nil {
+	if err := ctx.BindAndValidate(&data); err != nil {
+		if errors.Is(err, context.ErrBind) {
+			return ErrBind
+		}
 		return err
 	}
 
-	user, err := u.service.Get(data.ID)
+	user, err := u.service.Get(ctx, data)
 	if err != nil {
 		return err
 	}
-	return c.JSON(http.StatusOK, user)
+	return ctx.JSON(http.StatusOK, UserResponse{User: user})
 }
 
 // Create ...
-func (u *UserController) Create(c context.Context) error {
+func (u *UserController) Create(ctx context.Context) error {
 	var data parameter.UserCreate
-	if err := c.BindAndValidate(&data); err != nil {
+	if err := ctx.BindAndValidate(&data); err != nil {
+		if errors.Is(err, context.ErrBind) {
+			return ErrBind
+		}
 		return err
 	}
 
-	user, err := u.service.Create(data)
+	user, err := u.service.Create(ctx, data)
 	if err != nil {
 		return err
 	}
-	return c.JSON(http.StatusOK, user)
+	return ctx.JSON(http.StatusOK, UserResponse{User: user})
 }
 
 // Update ...
-func (u *UserController) Update(c context.Context) error {
+func (u *UserController) Update(ctx context.Context) error {
 	var data parameter.UserUpdate
-	if err := c.BindAndValidate(&data); err != nil {
+	if err := ctx.BindAndValidate(&data); err != nil {
+		if errors.Is(err, context.ErrBind) {
+			return ErrBind
+		}
 		return err
 	}
 
-	user, err := u.service.Update(data.ID, data)
+	user, err := u.service.Update(ctx, data)
 	if err != nil {
 		return err
 	}
-	return c.JSON(http.StatusOK, user)
+	return ctx.JSON(http.StatusOK, UserResponse{User: user})
 }
 
 // Delete ...
-func (u *UserController) Delete(c context.Context) error {
+func (u *UserController) Delete(ctx context.Context) error {
 	var data parameter.UserID
-	if err := c.BindAndValidate(&data); err != nil {
+	if err := ctx.BindAndValidate(&data); err != nil {
+		if errors.Is(err, context.ErrBind) {
+			return ErrBind
+		}
 		return err
 	}
-	return u.service.Delete(data.ID)
+	if err := u.service.Delete(ctx, data); err != nil {
+		return err
+	}
+	return ctx.JSON(http.StatusOK, UserResponse{User: nil})
 }

@@ -6,38 +6,30 @@ import (
 	echo "github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 
-	"go-project/context"
 	"go-project/extension"
+	"go-project/extension/types"
 	"go-project/infrastructure/database"
-	gm "go-project/middleware"
+	gm "go-project/interface/middleware"
 	"go-project/wire"
 )
 
-type handlerFunc func(c context.Context) error
-
-func cast(next handlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		return next(c.(context.Context))
-	}
+func router(r *echo.Group, db database.Handler) {
+	statusRouter(r)
+	userRouter(r, db)
 }
 
-func router(e *echo.Echo, db database.Handler) {
-	statusRouter(e)
-	userRouter(e, db)
-}
-
-func statusRouter(e *echo.Echo) {
+func statusRouter(r *echo.Group) {
 	controller := wire.NewStatusController()
-	e.GET("/", cast(controller.Get))
+	r.GET("", gm.Cast(controller.Get))
 }
 
-func userRouter(e *echo.Echo, db database.Handler) {
+func userRouter(r *echo.Group, db database.Handler) {
 	controller := wire.NewUserController(db)
-	e.GET("/users", cast(controller.List))
-	e.POST("/users", cast(controller.Create))
-	e.GET("/users/:id", cast(controller.Get))
-	e.PUT("/users/:id", cast(controller.Update))
-	e.DELETE("/users/:id", cast(controller.Delete))
+	r.GET("/users", gm.Cast(controller.List))
+	r.POST("/users", gm.Cast(controller.Create))
+	r.GET("/users/:id", gm.Cast(controller.Get))
+	r.PUT("/users/:id", gm.Cast(controller.Update))
+	r.DELETE("/users/:id", gm.Cast(controller.Delete))
 }
 
 func main() {
@@ -57,11 +49,12 @@ func main() {
 		panic(err)
 	}
 
-	if _, err := extension.NewHash(os.Getenv("HASH_SALT"), 20); err != nil {
+	if _, err := types.NewHash(os.Getenv("HASH_SALT"), 20); err != nil {
 		panic(err)
 	}
 
-	router(e, db)
+	g := e.Group("/api")
+	router(g, db)
 
 	e.Logger.Fatal(e.Start(":" + os.Getenv("PORT")))
 }

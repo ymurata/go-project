@@ -20,7 +20,7 @@ func NewStatusController(service service.StatusService) *StatusController {
 }
 
 // Get ...
-func (s *StatusController) Get(c context.Context) error {
-	status := s.service.Get()
-	return c.JSON(http.StatusOK, status)
+func (s *StatusController) Get(ctx context.Context) error {
+	status := s.service.Get(ctx)
+	return ctx.JSON(http.StatusOK, status)
 }

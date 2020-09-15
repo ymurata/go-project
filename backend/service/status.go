@@ -1,6 +1,7 @@
 package service
 
 import (
+	"go-project/context"
 	"go-project/domain/model"
 	"go-project/domain/repository"
 )
@@ -8,7 +9,7 @@ import (
 type (
 	// StatusService ...
 	StatusService interface {
-		Get() *model.Status
+		Get(ctx context.Context) *model.Status
 	}
 	// StatusServiceImpl ...
 	StatusServiceImpl struct {
@@ -24,7 +25,7 @@ func NewStatusServiceImpl(repo repository.StatusRepository) *StatusServiceImpl {
 }
 
 // Get ...
-func (s *StatusServiceImpl) Get() *model.Status {
+func (s *StatusServiceImpl) Get(ctx context.Context) *model.Status {
 	return s.repo.Get()
 }
 

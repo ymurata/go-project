@@ -1,10 +1,10 @@
 package parameter
 
-import "go-project/extension"
+import "go-project/extension/types"
 
 // UserID ...
 type UserID struct {
-	ID extension.HashID64 `param:"id" validate:"required"`
+	ID types.HashID64 `param:"id" validate:"required"`
 }
 
 // UserCreate ...
@@ -15,6 +15,6 @@ type UserCreate struct {
 
 // UserUpdate ...
 type UserUpdate struct {
-	ID   extension.HashID64 `param:"id" validate:"required"`
-	Name string             `json:"name" validate:"required"`
+	ID   types.HashID64 `param:"id" validate:"required"`
+	Name string         `json:"name" validate:"required"`
 }

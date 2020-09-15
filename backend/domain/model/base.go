@@ -3,19 +3,21 @@ package model
 import (
 	"time"
 
-	"go-project/extension"
+	"go-project/extension/types"
 )
 
 // Base ...
 type Base struct {
 	ID        int64     `json:"id" gorm:"primaryKey"`
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt time.Time `json:"created_at" gorm:"<-:create"`
 	UpdatedAt time.Time `json:"updated_at"`
+	Deleted   bool      `json:"deleted"`
 }
 
 // BaseWithHashID ...
 type BaseWithHashID struct {
-	ID        extension.HashID64 `json:"id" gorm:"primaryKey"`
-	CreatedAt time.Time          `json:"created_at"`
-	UpdatedAt time.Time          `json:"updated_at"`
+	ID        types.HashID64 `json:"id" gorm:"primaryKey"`
+	CreatedAt time.Time      `json:"created_at" gorm:"<-:create"`
+	UpdatedAt time.Time      `json:"updated_at"`
+	Deleted   bool           `json:"deleted"`
 }

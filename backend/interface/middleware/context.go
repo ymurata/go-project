@@ -14,3 +14,10 @@ func Context() echo.MiddlewareFunc {
 		}
 	}
 }
+
+// Cast ...
+func Cast(next func(c context.Context) error) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return next(c.(context.Context))
+	}
+}
