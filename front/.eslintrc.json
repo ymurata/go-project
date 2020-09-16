@@ -25,7 +25,18 @@
         "react",
         "@typescript-eslint"
     ],
+    "settings": {},
     "rules": {
+        "import/extensions": [
+           "error",
+           "ignorePackages",
+           {
+             "js": "never",
+             "jsx": "never",
+             "ts": "never",
+             "tsx": "never"
+           }
+        ],
         "no-use-before-define": "off",
         "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".ts"] }]
     }
