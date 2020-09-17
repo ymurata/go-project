@@ -48,6 +48,7 @@
     },
     "rules": {
         "prettier/prettier": "error",
+        "no-use-before-define": 0,
         "import/extensions": [
            "error",
            "ignorePackages",
@@ -58,9 +59,8 @@
              "tsx": "never"
            }
         ],
-        "no-unused-vars": [1, { "extensions": [".tsx", ".ts"} }],
-        "no-use-before-define": [1, { "extensions": [".tsx", ".ts"] }],
-        "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".ts"] }],
-        "react/prop-types": [1, { "extensions": [".tsx", ".ts"] }]
+        "@typescript-eslint/no-use-before-define": 0,
+        "react/prop-types": 0,
+        "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".ts"] }]
     }
 }
